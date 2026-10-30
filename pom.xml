@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- PROJECT COORDINATES -->
     <groupId>com.nobroker.test</groupId>
     <artifactId>nobroker-selenium</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
 
-    <name>nobroker-selenium</name>
-    <description>Selenium + Cucumber BDD framework for NoBroker.in</description>
-
-    <!-- PROPERTIES -->
-        <properties>
+    <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,19 +16,19 @@
         <selenium.version>4.21.0</selenium.version>
         <cucumber.version>7.18.0</cucumber.version>
         <testng.version>7.10.2</testng.version>
-        <slf4j.version>2.0.13</slf4j.version>
         
-        <!-- NO BROWSER PROPERTY HERE. LET MAVEN CMD HANDLE IT -->
+        <!-- Default values (can be overridden from CMD) -->
+        <browser>chrome</browser>
+        <headless>false</headless>
+        <cucumber.filter.tags></cucumber.filter.tags>
     </properties>
 
     <dependencies>
-        <!-- Selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
-        <!-- Cucumber -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
@@ -55,18 +47,10 @@
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -78,8 +62,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.4</version>
                 <configuration>
-                    <!-- THIS IS THE MAGIC LINE: It forces the CLI -D to pass into Java -->
-                    <argLine>-Dbrowser=${browser} -Dheadless=${headless}</argLine>
+                    <!-- Passes properties safely to Java -->
+                    <systemPropertyVariables>
+                        <browser>${browser}</browser>
+                        <headless>${headless}</headless>
+                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                    </systemPropertyVariables>
                     <includes>
                         <include>**/runners/**/*Test.java</include>
                     </includes>
@@ -87,5 +75,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
